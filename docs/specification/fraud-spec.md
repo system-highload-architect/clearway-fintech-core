@@ -12,9 +12,9 @@
 graph TD
     In[gRPC: FraudCheckRequest] --> IP{ClientIp в blacklistedIPs мапе ОЗУ?}
     IP -->|Да| Block1[Return Risk: 1.0, IP_BLACKLISTED]
-    IP -->|Нет| Bin{cardBin == 411111 и Amount > 100 000 руб?}
+    IP -->|Нет| Bin{"cardBin == 411111 и Amount > 100 000 руб?"}
     Bin -->|Да| Block2[Return Risk: 0.95, HIGH_VOLUME_SPAM]
-    Bin -->|Нет| Fingerprint{len(deviceFingerprint) < 10 знаков?}
+    Bin -->|Нет| Fingerprint{"len(deviceFingerprint) < 10 знаков?"}
     Fingerprint -->|Да| Block3[Return Risk: 0.80, BOT_EMULATOR_DETECTED]
     Fingerprint -->|Нет| Pass[Return Risk: 0.05, SUCCESS ALLOWED]
 ```

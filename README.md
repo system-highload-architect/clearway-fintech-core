@@ -8,8 +8,8 @@ Distributed high-performance transactional payment core engineered under strict 
 
 ## 🛠️ DOCUMENTATION MAP & RUNTIME MANUAL / КАРТА СПЕЦИФИКАЦИЙ И ЗАПУСК
 
-*   🚀 **[LAUNCH.md](LAUNCH.md)** — step-by-step cold initialization, Go Workspace compilation, gRPC stubs build, and deployment guide [2.1].
-*   🚀 **[LAUNCH.md](LAUNCH.md)** — пошаговый регламент холодной инициализации, сборки Go воркспейсов, компиляции gRPC и запуска шлюза [2.1].
+*   🚀 **[LAUNCH.md](launch.md)** — step-by-step cold initialization, Go Workspace compilation, gRPC stubs build, and deployment guide [2.1].
+*   🚀 **[LAUNCH.md](launch.md)** — пошаговый регламент холодной инициализации, сборки Go воркспейсов, компиляции gRPC и запуска шлюза [2.1].
 *   🗺️ **[docs/navigation.md](docs/navigation.md)** — unified index link board routing to detailed Software Requirement Specifications (SRS) and Low-Level Component Specifications [2.1].
 *   🗺️ **[docs/navigation.md](docs/navigation.md)** — единая навигационная карта, ведущая к детальным Техническим Заданиям (SRS) и спецификациям каждого модуля [2.1].
 
@@ -80,6 +80,12 @@ sequenceDiagram
 
 ## 🎰 2. STRUCTURAL DOMAIN DECOUPLING / РАЗДЕЛЕНИЕ КОНТУРОВ СИСТЕМЫ
 
-1.  **`services/` (Network Infrastructure Edge)**: ontains stateless reverse-proxies, configuration chassis routers, and L7 switches [2.1]. Free from any financial context or business-logic variables [1.1].
+### 🇺🇸 ENGLISH VERSION
+1.  **`services/` (Network Infrastructure Edge)**: contains stateless reverse-proxies, configuration chassis routers, and L7 switches [2.1]. Free from any financial context or business-logic variables [1.1].
 2.  **`core/` (Transactional Monolith Core)**: encapsulates high-availability banking sub-domains [2.1]. Bound strictly to interface abstraction models, allowing immediate zero-code-change microservice partitioning onto separate machines or Kubernetes nodes [1.1, 2.1].
-3.  **`internal/pkg/` (Blazing Fast Shared Frameworks)**: reflection-free, zero-allocation algorithms общего назначения ($O(1)$ maps registry dispatchers, CPU-atomic CAS token buckets, memory-sharded sliding-window caches) [1.1].
+3.  **`internal/pkg/` (Blazing Fast Shared Frameworks)**: reflection-free, zero-allocation generic algorithms ($O(1)$ maps registry dispatchers, CPU-atomic CAS token buckets, memory-sharded sliding-window caches) [1.1].
+
+### 🇷🇺 РУССКАЯ ВЕРСИЯ
+1.  **`services/` (Сетевой инфраструктурный Edge-периметр)**: содержит легковесные реверс-прокси, конфигурационные модули шасси и L7-коммутаторы трафика [2.1]. Полностью очищен от финансового контекста, транзакционных стейтов и переменных бизнес-логики [1.1].
+2.  **`core/` (Ядро транзакционного модульного монолита)**: инкапсулирует отказоустойчивые банковские субдомены (Ledger, Processing, Fraud, Ingress Gateway) [2.1]. Связан со смежными слоями исключительно через абстракции интерфейсов. Это позволяет за 5 минут вынести любой домен в отдельный gRPC-микросервис без изменения бизнес-логики (деплой на другие физические серверы или в поды Kubernetes) [1.1, 2.1].
+3.  **`internal/pkg/` (Высокопроизводительные разделяемые утилиты)**: общие наносекундные алгоритмы без рефлексии и без выделения памяти в куче (диспетчеры команд $O(1)$, Lock-Free CAS лимитеры на регистрах CPU и кэши скользящего окна Sliding Window с атомарным вытеснением OOM) [1.1].

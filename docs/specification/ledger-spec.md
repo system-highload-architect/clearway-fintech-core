@@ -13,9 +13,9 @@ graph TD
     In[gRPC: CommitDoubleEntryTransaction] --> Load[Извлечение wallets дебет/кредит из RAM-мапы]
     Load --> Currency{Совпадают валюты RUB/USD?}
     Currency -->|Нет| Err[Return Error: Currency Mismatch]
-    Currency -->|Да| Math[pkg/fixedpoint: debitBal.Sub(amount)]
+    Currency -->|Да| Math["pkg/fixedpoint: debitBal.Sub(amount)"]
     Math -->|Ошибка: Овердрафт| ErrOver[Return Error: Недостаточно средств]
-    Math -->|Успех| Credit[pkg/fixedpoint: creditBal.Add(amount)]
+    Math -->|Успех| Credit["pkg/fixedpoint: creditBal.Add(amount)"]
     Credit --> Write[INSERT INTO entries: Append-Only Лог проводок LedgerEntry]
     Write --> Return[Возврат новых балансов int64 по gRPC]
 ```
