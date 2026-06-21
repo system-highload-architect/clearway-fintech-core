@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearway Fintech Core Dashboard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="cyber-body">
+
+    <div class="dashboard-container">
+        <!-- HEADER BLOCK -->
+        <header class="cyber-header">
+            <div class="header-title">
+                <div class="flex-align">
+                    <div class="pulse-indicator"></div>
+                    <h1 class="gradient-text">🪐 CLEARWAY FINTECH CORE</h1>
+                </div>
+                <p class="subtitle">Modular Monolith Processing Cluster • Isolation Level: PCI-DSS Segregated</p>
+            </div>
+            <div class="header-metrics">
+                <div class="metric-card">
+                    <span class="label">TPS:</span> <span class="value value-emerald" id="tps_counter">0.0</span>
+                </div>
+                <div class="metric-card">
+                    <span class="label">GC PAUSE:</span> <span class="value value-teal">2.4µs</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD GRID -->
+        <div class="cyber-grid">
+            
+            <!-- LEFT PANEL: TERMINAL CARD ENGINES -->
+            <div class="panel">
+                <div>
+                    <div class="panel-header">
+                        <h2 class="panel-title">💳 ТЕРМИНАЛ ВВОДА КАРТЫ</h2>
+                        <span class="badge badge-emerald">AES-256-GCM</span>
+                    </div>
+
+                    <!-- ТЕСТОВЫЕ СЦЕНАРИИ -->
+                    <div class="scenario-selector" style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <button onclick="setScenario('success')" style="flex: 1; background: #064e3b; color: #34d399; border: 1px solid #10b981; font-size: 9px; padding: 6px; font-weight: bold; border-radius: 4px; cursor: pointer;">✅ УСПЕХ</button>
+                        <button onclick="setScenario('fraud')" style="flex: 1; background: #7f1d1d; color: #fca5a5; border: 1px solid #f43f5e; font-size: 9px; padding: 6px; font-weight: bold; border-radius: 4px; cursor: pointer;">🚨 ФРОД</button>
+                        <button onclick="setScenario('luhn')" style="flex: 1; background: #1e293b; color: #94a3b8; border: 1px solid #475569; font-size: 9px; padding: 6px; font-weight: bold; border-radius: 4px; cursor: pointer;">❌ ЛУН БАГ</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-block">
+                            <label class="input-label">Номер банковской карты</label>
+                            <input id="card_number" type="text" value="4111 2222 3333 4445" class="cyber-input pan-input" placeholder="0000 0000 0000 0000">
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="input-block">
+                                <label class="input-label">Срок (ММ/ГГ)</label>
+                                <input id="card_expiry" type="text" value="12/29" class="cyber-input" placeholder="12/26">
+                            </div>
+                            <div class="input-block">
+                                <label class="input-label">Защитный код CVV</label>
+                                <input id="card_cvv" type="password" value="123" class="cyber-input" placeholder="***">
+                            </div>
+                        </div>
+
+                        <div class="input-block">
+                            <label class="input-label">Сумма оплаты (RUB)</label>
+                            <div class="amount-wrapper">
+                                <input id="amount" type="text" value="150.25" class="cyber-input amount-input">
+                                <span class="currency-tag">₽</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn_pay" onclick="runProcessingPipeline()" class="btn-pay">
+                     <span id="btn_text">ПРОВЕСТИ ТРАНЗАКЦИЮ</span>
+                </button>
+            </div>
+
+            <!-- CENTER PANEL: CSS GRAPH OF STATE MACHINE (FSM) -->
+            <!-- ИСПРАВЛЕНО: Привязали ID "line_X" к контейнерам линий, чтобы провода окрашивались нативно! -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📊 ЖИЗНЕННЫЙ ЦИКЛ FSM АВТОМАТА</h2>
+                    <span class="badge badge-teal">O(1) GRAPH</span>
+                </div>
+
+                <div class="fsm-graph">
+                    <div id="line_1" class="node-line">
+                        <div id="node_NEW" class="node-circle">1</div>
+                        <div class="node-text">NEW <span class="node-sub">Аллокация структуры в ОЗУ ядра</span></div>
+                    </div>
+                    <div id="line_2" class="node-line">
+                        <div id="node_FRAUD" class="node-circle">2</div>
+                        <div class="node-text">FRAUD_CHECKING <span class="node-sub">Анализ рисков скоринг-радара</span></div>
+                    </div>
+                    <div id="line_3" class="node-line">
+                        <div id="node_HOLD" class="node-circle">3</div>
+                        <div class="node-text">ACQUIRING_HOLD <span class="node-sub">Авторизационная заморозка денег</span></div>
+                    </div>
+                    <div id="line_4" class="node-line">
+                        <div id="node_HELD" class="node-circle">4</div>
+                        <div class="node-text">HELD <span class="node-sub">Sliding Window фиксация резерва</span></div>
+                    </div>
+                    <div id="line_5" class="node-line-last">
+                        <div id="node_CAPTURED" class="node-circle">5</div>
+                        <div class="node-text">CAPTURED <span class="node-sub">Двойная запись Ledger книги клиринга</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: HEX DATA TELEMETRY -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📟 ТЕЛЕМЕТРИЯ DATA PLANE</h2>
+                    <button onclick="clearLogs()" class="btn-clear">❌ CLEAR</button>
+                </div>
+                <div id="terminal" class="cyber-terminal">
+                    <div class="term-slate">// Ожидание инициализации транзакции...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOWER TELEMETRY LAYER: VANILLA CSS CHART -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">📈 РАСПРЕДЕЛЕННЫЙ МОНИТОР ПАМЯТИ КЛАССТЕРА</h2>
+                <div class="pulse-indicator"></div>
+            </div>
+            <div class="chart-wrapper" id="bar_chart_container">
+                <div class="bar" style="height: 45%;"></div>
+                <div class="bar" style="height: 52%;"></div>
+                <div class="bar" style="height: 49%;"></div>
+                <div class="bar" style="height: 61%;"></div>
+                <div class="bar" style="height: 55%;"></div>
+                <div class="bar" style="height: 42%;"></div>
+                <div class="bar" style="height: 48%;"></div>
+                <div class="bar" style="height: 50%;"></div>
+                <div class="bar" style="height: 58%;"></div>
+                <div class="bar" style="height: 63%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

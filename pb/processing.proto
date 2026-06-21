@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "clearway-fintech-core/pb;gen";
+
+// ProcessingTransactionCore оркестрирует шаги списания денег мерчантов
+service ProcessingTransactionCore {
+    // ProcessHold временно замораживает средства на балансе (Авторизация)
+    rpc ProcessHold(HoldRequest) returns (HoldResponse);
+    // ProcessCapture подтверждает списание ранее замороженных средств (Расчет)
+    rpc ProcessCapture(CaptureRequest) returns (CaptureResponse);
+    // ProcessReversal мгновенно отменяет транзакцию и возвращает деньги (Компенсация)
+    rpc ProcessReversal(ReversalRequest) returns (ReversalResponse);
+}
+
+message HoldRequest {
+    string payment_token    = 1; // Обезличенный токен карты из Gateway
+    string merchant_id      = 2; // Целевой b2b-мерчант
+    int64  amount_units     = 3; // Сумма заморозки в копейках
+    string idempotency_key  = 4; // Защита от Double-Spending атак
+    string category_tag     = 5; // Тег сессии для пула кэшей (INSTANT, STANDARD)
+}
+
+message HoldResponse {
+    string transaction_id   = 1; // Уникальный ID транзакции в системе
+    string current_state     = 2; // Текущий стейт из FSM (например, "ACQUIRING_HOLD")
+    bool   is_success       = 3;
+    string error_code       = 4; // ISO-код ошибки при отказе
+}
+
+message CaptureRequest {
+    string transaction_id   = 1; // ID транзакции, созданный на этапе Hold
+    string merchant_id      = 2;
+    int64  amount_units     = 3; // Сумма окончательного списания
+}
+
+message CaptureResponse {
+    string current_state     = 1; // Сдвиг FSM в "SETTLED" или "CAPTURED"
+    bool   is_success       = 2;
+    string error_code       = 3;
+}
+
+message ReversalRequest {
+    string transaction_id   = 1;
+    string merchant_id      = 2;
+    string reason           = 3; // Причина отмены платежа
+}
+
+message ReversalResponse {
+    string current_state     = 1; // Сдвиг FSM в "REVERSED"
+    bool   is_success       = 2;
+}

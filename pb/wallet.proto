@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "clearway-fintech-core/pb;gen";
+
+// LedgerWalletEngine управляет балансами кошельков мерчантов и клирингом
+service LedgerWalletEngine {
+    // CommitDoubleEntryTransaction атомарно списывает с одного кошелька и зачисляет на другой
+    rpc CommitDoubleEntryTransaction(LedgerEntryRequest) returns (LedgerEntryResponse);
+    // GetWalletBalance возвращает текущий точный баланс кошелька мерчанта
+    rpc GetWalletBalance(BalanceRequest) returns (BalanceResponse);
+}
+
+message LedgerEntryRequest {
+    string debit_wallet_id  = 1; // ID кошелька, С КУДА списываем средства
+    string credit_wallet_id = 2; // ID кошелька, КУДА зачисляем средства
+    int64  amount_units     = 3; // Сумма операции в копейках (int64 Fixed-Point)
+    string tx_id            = 4; // Уникальный ID транзакции-инициатора
+    string description      = 5; // Назначение платежа
+}
+
+message LedgerEntryResponse {
+    bool   is_committed     = 1; // Статус записи в NoSQL Append-Only лог
+    int64  new_debit_bal    = 2; // Новый точный остаток дебетового кошелька
+    int64  new_credit_bal   = 3; // Новый точный остаток кредитового кошелька
+    string error_message    = 4;
+}
+
+message BalanceRequest {
+    string wallet_id        = 1;
+    string merchant_id      = 2;
+}
+
+message BalanceResponse {
+    int64  available_units  = 1; // Доступные средства в копейках
+    int64  reserved_units   = 2; // Средства, замороженные на этапе HOLD
+    string currency         = 3;
+}

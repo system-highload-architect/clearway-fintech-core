@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "clearway-fintech-core/pb;gen";
+
+// FraudRadarEngine анализирует транзакции на фрод в реальном времени
+service FraudRadarEngine {
+    // CheckFraudScore за <5мс анализирует параметры платежа и выносит вердикт
+    rpc CheckFraudScore(FraudCheckRequest) returns (FraudCheckResponse);
+}
+
+message FraudCheckRequest {
+    string client_ip        = 1; // IP-адрес плательщика
+    string device_fingerprint=2; // Уникальный хэш железа браузера
+    int64  amount_units     = 3; // Сумма транзакции
+    string merchant_id      = 4;
+    string card_bin         = 5; // Первые 6 знаков карты для анализа банка
+}
+
+message FraudCheckResponse {
+    bool   is_fraudulent    = 1; // Флаг мошенничества: true - заблокировать!
+    float  risk_score       = 2; // Рассчитанный коэффициент риска (0.0 - 1.0)
+    string block_reason     = 3; // Причина блокировки (например, "HIGH_FREQUENCY_SPAM")
+}

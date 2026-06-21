@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "clearway-fintech-core/pb;gen";
+
+// GatewayCardProcessor управляет безопасной токенизацией и первичным приемом карт
+service GatewayCardProcessor {
+    // TokenizeAndValidate осуществляет проверку карты по Луну и преобразует PAN в защищенный токен
+    rpc TokenizeAndValidate(TokenizeRequest) returns (TokenizeResponse);
+}
+
+message TokenizeRequest {
+    string card_number      = 1; // Сырой PAN карты (Будет замаскирован в логах)
+    string card_holder      = 2; // Имя владельца
+    string expiry_date      = 3; // Срок действия (ММ/ГГ)
+    string cvv              = 4; // Защитный код
+    string merchant_id      = 5; // ID b2b-мерчанта
+    int64  amount_units     = 6; // Точная сумма в копейках (Fixed-Point int64)
+    string currency         = 7; // ISO-код валюты (RUB, USD)
+}
+
+message TokenizeResponse {
+    bool   is_allowed       = 1; // Результат валидации Луна и лимитов
+    string payment_token    = 2; // Безопасный UUID-токен, заменяющий карту в ОЗУ ядра
+    string correlation_id   = 3; // Сквозной хэш трассировки запроса
+    string error_message    = 4; // Текст ошибки при отказе
+}
