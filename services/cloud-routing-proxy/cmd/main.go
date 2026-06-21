@@ -16,10 +16,20 @@ import (
 	ledgerUc "clearway-fintech-core/core/ledger/usecase"
 	processingGrpc "clearway-fintech-core/core/processing/delivery/grpc"
 	processingUc "clearway-fintech-core/core/processing/usecase"
+	"clearway-fintech-core/internal/chassis"
 	"clearway-fintech-core/internal/pkg/fixedpoint"
 )
 
+var cfg chassis.BaseConfig
+
 func main() {
+	if err := chassis.LoadConfigAbstract("services/cloud-routing-proxy/config.yaml", &cfg); err != nil {
+		fmt.Printf("⚠️ [CONFIG WARN]: Не удалось загрузить config.yaml, фолбэк на дефолты: %v\n", err)
+		cfg.ServerPort = ":8080" // Фолбэк-дефолт
+	}
+
+	fmt.Printf("📡 [CHASSIS]: Конфигурация успешно загружена. Окружение: %s | Ин ingress-порт: %s\n", cfg.Environment, cfg.ServerPort)
+
 	fmt.Println("🚀 [API GATEWAY]: Запуск Ingress Эшелона Локального Монолита...")
 
 	// 1. Инициализируем слои и зависимости "на берегу" (DI-Контейнер ОЗУ)
